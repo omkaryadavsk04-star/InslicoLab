@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InSilicoLab</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div>
+          <p class="eyebrow">AI Drug Discovery</p>
+          <h1>InSilicoLab</h1>
+        </div>
+
+        <nav class="nav-list" aria-label="Workflow">
+          <button class="nav-item active" type="button">Compounds</button>
+          <button class="nav-item" type="button">Docking</button>
+          <button class="nav-item" type="button">ADMET</button>
+          <button class="nav-item" type="button">Reports</button>
+        </nav>
+
+        <section class="status-panel">
+          <span class="status-dot"></span>
+          <div>
+            <strong>Prototype v1</strong>
+            <p>SMILES screening and Lipinski triage</p>
+          </div>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Compound triage</p>
+            <h2>Drug-likeness workbench</h2>
+          </div>
+          <button id="exportCsv" class="icon-button" type="button" title="Export CSV" aria-label="Export CSV">
+            <span>CSV</span>
+          </button>
+        </header>
+
+        <section class="input-band">
+          <form id="compoundForm" class="compound-form">
+            <label for="compoundName">Compound name</label>
+            <input id="compoundName" name="compoundName" type="text" placeholder="Aspirin" autocomplete="off" />
+
+            <label for="smilesInput">SMILES</label>
+            <textarea id="smilesInput" name="smilesInput" placeholder="CC(=O)OC1=CC=CC=C1C(=O)O" required></textarea>
+
+            <div class="form-actions">
+              <button class="primary-button" type="submit">Analyze</button>
+              <button id="loadExamples" class="secondary-button" type="button">Examples</button>
+            </div>
+          </form>
+
+          <div class="molecule-panel" aria-label="Molecule preview">
+            <canvas id="moleculeCanvas" width="420" height="260"></canvas>
+          </div>
+        </section>
+
+        <section class="metrics-grid" aria-label="Calculated properties">
+          <article class="metric">
+            <span>Engine</span>
+            <strong id="engineValue">Local</strong>
+          </article>
+          <article class="metric">
+            <span>Mol. weight</span>
+            <strong id="mwValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Formula</span>
+            <strong id="formulaValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Exact mass</span>
+            <strong id="exactMassValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>cLogP estimate</span>
+            <strong id="logpValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>H donors</span>
+            <strong id="hbdValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>H acceptors</span>
+            <strong id="hbaValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>TPSA estimate</span>
+            <strong id="tpsaValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Rot. bonds</span>
+            <strong id="rotatableValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Heavy atoms</span>
+            <strong id="heavyAtomsValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Rings</span>
+            <strong id="ringsValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Aromatic rings</span>
+            <strong id="aromaticRingsValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Fraction Csp3</span>
+            <strong id="fractionCsp3Value">--</strong>
+          </article>
+          <article class="metric">
+            <span>Formal charge</span>
+            <strong id="chargeValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Mol. refractivity</span>
+            <strong id="mrValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Lipinski</span>
+            <strong id="lipinskiValue">--</strong>
+          </article>
+        </section>
+
+        <section class="results-section">
+          <div class="section-heading">
+            <h3>Compound library</h3>
+            <p id="libraryCount">0 compounds</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>SMILES</th>
+                  <th>Formula</th>
+                  <th>MW</th>
+                  <th>LogP</th>
+                  <th>HBD</th>
+                  <th>HBA</th>
+                  <th>TPSA</th>
+                  <th>RotB</th>
+                  <th>Lipinski</th>
+                </tr>
+              </thead>
+              <tbody id="compoundTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
