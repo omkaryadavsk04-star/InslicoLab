@@ -183,6 +183,7 @@ h3 {
 .molecule-panel,
 .interpretation-section,
 .admet-section,
+.methods-section,
 .results-section {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -369,6 +370,36 @@ textarea {
   padding: 0 18px 18px 36px;
 }
 
+.methods-section {
+  overflow: hidden;
+}
+
+.methods-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 18px;
+}
+
+.method-item {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fbfdfc;
+}
+
+.method-item strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.method-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .table-wrap {
   overflow-x: auto;
 }
@@ -467,7 +498,8 @@ td {
 
   .input-band,
   .metrics-grid,
-  .admet-grid {
+  .admet-grid,
+  .methods-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -480,7 +512,8 @@ td {
 
   .input-band,
   .metrics-grid,
-  .admet-grid {
+  .admet-grid,
+  .methods-grid {
     grid-template-columns: 1fr;
   }
 
