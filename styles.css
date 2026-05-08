@@ -181,6 +181,7 @@ h3 {
 
 .compound-form,
 .molecule-panel,
+.interpretation-section,
 .results-section {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -275,6 +276,56 @@ textarea {
   color: var(--muted);
 }
 
+.interpretation-body {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.interpretation-body p {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.risk-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.risk-chip {
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: var(--soft);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.risk-chip.good {
+  background: #dcfce7;
+  color: var(--good);
+}
+
+.risk-chip.moderate {
+  background: #ffedd5;
+  color: var(--warn);
+}
+
+.risk-chip.risk {
+  background: #fee2e2;
+  color: var(--bad);
+}
+
+.suggestion-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
 .table-wrap {
   overflow-x: auto;
 }
@@ -332,6 +383,34 @@ td {
 .badge.bad {
   background: #fee2e2;
   color: var(--bad);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(16, 35, 31, 0.45);
+}
+
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal {
+  width: min(520px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.modal p {
+  margin: 0;
+  padding: 18px;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 @media (max-width: 1040px) {

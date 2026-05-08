@@ -15,10 +15,10 @@
         </div>
 
         <nav class="nav-list" aria-label="Workflow">
-          <button class="nav-item active" type="button">Compounds</button>
-          <button class="nav-item" type="button">Docking</button>
-          <button class="nav-item" type="button">ADMET</button>
-          <button class="nav-item" type="button">Reports</button>
+          <button class="nav-item active" type="button" data-module="Compounds">Compounds</button>
+          <button class="nav-item" type="button" data-module="Docking">Docking</button>
+          <button class="nav-item" type="button" data-module="ADMET">ADMET</button>
+          <button class="nav-item" type="button" data-module="Reports">Reports</button>
         </nav>
 
         <section class="status-panel">
@@ -127,6 +127,27 @@
           </article>
         </section>
 
+        <section class="interpretation-section" aria-label="Drug-likeness interpretation">
+          <div class="section-heading">
+            <h3>Drug-likeness interpretation</h3>
+            <p id="overallValue">Waiting for molecule</p>
+          </div>
+          <div class="interpretation-body">
+            <p id="summaryValue">Analyze a SMILES to generate a medicinal chemistry interpretation.</p>
+            <div class="risk-grid">
+              <span id="sizeRisk" class="risk-chip">Size --</span>
+              <span id="lipophilicityRisk" class="risk-chip">Lipophilicity --</span>
+              <span id="polarityRisk" class="risk-chip">Polarity --</span>
+              <span id="flexibilityRisk" class="risk-chip">Flexibility --</span>
+              <span id="hbondRisk" class="risk-chip">H-bonding --</span>
+              <span id="shapeRisk" class="risk-chip">Shape --</span>
+            </div>
+            <ul id="suggestionList" class="suggestion-list">
+              <li>RDKit results will appear here after analysis.</li>
+            </ul>
+          </div>
+        </section>
+
         <section class="results-section">
           <div class="section-heading">
             <h3>Compound library</h3>
@@ -154,6 +175,16 @@
         </section>
       </section>
     </main>
+
+    <div id="moduleModal" class="modal-overlay" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="moduleTitle">
+        <div class="section-heading">
+          <h3 id="moduleTitle">Coming soon</h3>
+          <button id="closeModal" class="icon-button" type="button" aria-label="Close">X</button>
+        </div>
+        <p id="moduleMessage"></p>
+      </section>
+    </div>
 
     <script src="app.js"></script>
   </body>

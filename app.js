@@ -139,6 +139,7 @@ async function getProperties(smiles) {
       fractionCsp3: data.fraction_csp3,
       formalCharge: data.formal_charge,
       lipinski: data.lipinski,
+      interpretation: data.interpretation,
       violations: data.lipinski === "Pass" ? 0 : data.lipinski === "Caution" ? 1 : 2,
     };
   } catch (error) {
@@ -229,6 +230,37 @@ function updateMetrics(result) {
   document.querySelector("#fractionCsp3Value").textContent = result.fractionCsp3 ?? "--";
   document.querySelector("#chargeValue").textContent = result.formalCharge ?? "--";
   document.querySelector("#lipinskiValue").textContent = result.lipinski;
+  updateInterpretation(result.interpretation);
+}
+
+function setRiskChip(id, label, value) {
+  const element = document.querySelector(id);
+  element.textContent = `${label} ${value ?? "--"}`;
+  element.className = "risk-chip";
+  if (value) {
+    element.classList.add(value.toLowerCase());
+  }
+}
+
+function updateInterpretation(interpretation) {
+  if (!interpretation) {
+    document.querySelector("#overallValue").textContent = "Local estimate";
+    document.querySelector("#summaryValue").textContent =
+      "Start the RDKit backend to get the full medicinal chemistry interpretation.";
+    return;
+  }
+
+  document.querySelector("#overallValue").textContent = `${interpretation.overall} profile`;
+  document.querySelector("#summaryValue").textContent = interpretation.summary;
+  setRiskChip("#sizeRisk", "Size", interpretation.size);
+  setRiskChip("#lipophilicityRisk", "Lipophilicity", interpretation.lipophilicity);
+  setRiskChip("#polarityRisk", "Polarity", interpretation.polarity);
+  setRiskChip("#flexibilityRisk", "Flexibility", interpretation.flexibility);
+  setRiskChip("#hbondRisk", "H-bonding", interpretation.h_bonding);
+  setRiskChip("#shapeRisk", "Shape", interpretation.shape);
+  document.querySelector("#suggestionList").innerHTML = interpretation.suggestions
+    .map((suggestion) => `<li>${suggestion}</li>`)
+    .join("");
 }
 
 function renderTable() {
@@ -312,6 +344,30 @@ document.querySelector("#exportCsv").addEventListener("click", () => {
   link.download = "insilicolab-compounds.csv";
   link.click();
   URL.revokeObjectURL(url);
+});
+
+document.querySelectorAll("[data-module]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const moduleName = button.dataset.module;
+    if (moduleName === "Compounds") return;
+
+    const messages = {
+      Docking:
+        "Docking will come after we add protein upload, ligand preparation, binding box setup, AutoDock Vina, and 3D pose viewing.",
+      ADMET:
+        "Advanced ADMET will come after we add trained prediction models for solubility, absorption, BBB likelihood, CYP risk, and toxicity.",
+      Reports:
+        "Reports will come after the analyzer and docking modules are stable, so exported PDFs contain meaningful results.",
+    };
+
+    document.querySelector("#moduleTitle").textContent = `${moduleName} coming soon`;
+    document.querySelector("#moduleMessage").textContent = messages[moduleName];
+    document.querySelector("#moduleModal").hidden = false;
+  });
+});
+
+document.querySelector("#closeModal").addEventListener("click", () => {
+  document.querySelector("#moduleModal").hidden = true;
 });
 
 drawMolecule("");
