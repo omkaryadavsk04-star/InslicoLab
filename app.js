@@ -28,6 +28,8 @@ const table = document.querySelector("#compoundTable");
 const libraryCount = document.querySelector("#libraryCount");
 const canvas = document.querySelector("#moleculeCanvas");
 const ctx = canvas.getContext("2d");
+const moleculeImage = document.querySelector("#moleculeImage");
+const API_BASE = window.location.protocol === "file:" ? "http://127.0.0.1:8000" : window.location.origin;
 
 function tokenizeSmiles(smiles) {
   return smiles.match(/Cl|Br|[A-Z][a-z]?|[cnosp]|\[[^\]]+\]/g) || [];
@@ -150,6 +152,27 @@ async function getProperties(smiles) {
 }
 
 function drawMolecule(smiles) {
+  if (smiles) {
+    const imageUrl = `${API_BASE}/api/structure.svg?smiles=${encodeURIComponent(smiles)}`;
+    moleculeImage.onload = () => {
+      moleculeImage.hidden = false;
+      canvas.hidden = true;
+    };
+    moleculeImage.onerror = () => {
+      moleculeImage.hidden = true;
+      canvas.hidden = false;
+      drawSketchMolecule(smiles);
+    };
+    moleculeImage.src = imageUrl;
+    return;
+  }
+
+  moleculeImage.hidden = true;
+  canvas.hidden = false;
+  drawSketchMolecule(smiles);
+}
+
+function drawSketchMolecule(smiles) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "#f7fbf9";
   ctx.fillRect(0, 0, canvas.width, canvas.height);

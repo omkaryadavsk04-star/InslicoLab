@@ -8,7 +8,8 @@ Beginner meaning:
 """
 
 from rdkit import Chem
-from rdkit.Chem import Crippen, Descriptors, Lipinski, rdMolDescriptors
+from rdkit.Chem import Crippen, Descriptors, Lipinski, rdDepictor, rdMolDescriptors
+from rdkit.Chem.Draw import rdMolDraw2D
 
 
 def lipinski_status(molecular_weight, logp, hbd, hba):
@@ -89,6 +90,20 @@ def analyze_smiles(smiles):
             fraction_csp3,
         ),
     }
+
+
+def smiles_to_svg(smiles):
+    """Render a molecule as an SVG image using RDKit."""
+    molecule = Chem.MolFromSmiles(smiles)
+
+    if molecule is None:
+        return None
+
+    rdDepictor.Compute2DCoords(molecule)
+    drawer = rdMolDraw2D.MolDraw2DSVG(520, 320)
+    drawer.DrawMolecule(molecule)
+    drawer.FinishDrawing()
+    return drawer.GetDrawingText()
 
 
 def classify(value, good_limit, caution_limit, higher_is_worse=True):

@@ -9,13 +9,13 @@ Beginner meaning:
 
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from chemistry import analyze_smiles
+from chemistry import analyze_smiles, smiles_to_svg
 
 
 app = FastAPI(title="InSilicoLab Chemistry API")
@@ -57,6 +57,14 @@ def analyze_api(request: MoleculeRequest):
 @app.post("/analyze")
 def analyze(request: MoleculeRequest):
     return analyze_smiles(request.smiles)
+
+
+@app.get("/api/structure.svg")
+def structure_svg(smiles: str):
+    svg = smiles_to_svg(smiles)
+    if svg is None:
+        raise HTTPException(status_code=400, detail="Invalid SMILES")
+    return Response(content=svg, media_type="image/svg+xml")
 
 
 @app.get("/")
