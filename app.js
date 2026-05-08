@@ -142,6 +142,7 @@ async function getProperties(smiles) {
       formalCharge: data.formal_charge,
       lipinski: data.lipinski,
       interpretation: data.interpretation,
+      admet: data.admet,
       violations: data.lipinski === "Pass" ? 0 : data.lipinski === "Caution" ? 1 : 2,
     };
   } catch (error) {
@@ -254,6 +255,7 @@ function updateMetrics(result) {
   document.querySelector("#chargeValue").textContent = result.formalCharge ?? "--";
   document.querySelector("#lipinskiValue").textContent = result.lipinski;
   updateInterpretation(result.interpretation);
+  updateAdmet(result.admet);
 }
 
 function setRiskChip(id, label, value) {
@@ -284,6 +286,27 @@ function updateInterpretation(interpretation) {
   document.querySelector("#suggestionList").innerHTML = interpretation.suggestions
     .map((suggestion) => `<li>${suggestion}</li>`)
     .join("");
+}
+
+function updateAdmet(admet) {
+  if (!admet) {
+    document.querySelector("#solubilityValue").textContent = "--";
+    document.querySelector("#giValue").textContent = "--";
+    document.querySelector("#bbbValue").textContent = "--";
+    document.querySelector("#permeabilityValue").textContent = "--";
+    document.querySelector("#cypValue").textContent = "--";
+    document.querySelector("#toxValue").textContent = "--";
+    document.querySelector("#admetNotes").innerHTML = "<li>RDKit backend is needed for ADMET preview.</li>";
+    return;
+  }
+
+  document.querySelector("#solubilityValue").textContent = admet.solubility;
+  document.querySelector("#giValue").textContent = admet.gi_absorption;
+  document.querySelector("#bbbValue").textContent = admet.bbb;
+  document.querySelector("#permeabilityValue").textContent = admet.permeability;
+  document.querySelector("#cypValue").textContent = admet.cyp_risk;
+  document.querySelector("#toxValue").textContent = admet.toxicity_flag;
+  document.querySelector("#admetNotes").innerHTML = admet.notes.map((note) => `<li>${note}</li>`).join("");
 }
 
 function renderTable() {
@@ -378,7 +401,7 @@ document.querySelectorAll("[data-module]").forEach((button) => {
       Docking:
         "Docking will come after we add protein upload, ligand preparation, binding box setup, AutoDock Vina, and 3D pose viewing.",
       ADMET:
-        "Advanced ADMET will come after we add trained prediction models for solubility, absorption, BBB likelihood, CYP risk, and toxicity.",
+        "The main page now includes ADMET preview. Advanced ADMET models for CYP isoforms, hERG, hepatotoxicity, and toxicity datasets are coming next.",
       Reports:
         "Reports will come after the analyzer and docking modules are stable, so exported PDFs contain meaningful results.",
     };

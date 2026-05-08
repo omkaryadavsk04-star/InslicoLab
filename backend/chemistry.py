@@ -89,6 +89,15 @@ def analyze_smiles(smiles):
             ring_count,
             fraction_csp3,
         ),
+        "admet": estimate_admet(
+            molecular_weight,
+            logp,
+            hbd,
+            hba,
+            tpsa,
+            rotatable_bonds,
+            formal_charge,
+        ),
     }
 
 
@@ -175,4 +184,42 @@ def interpret_drug_likeness(molecular_weight, logp, hbd, hba, tpsa, rotatable_bo
         "h_bonding": h_bonding,
         "shape": shape,
         "suggestions": suggestions,
+    }
+
+
+def estimate_admet(molecular_weight, logp, hbd, hba, tpsa, rotatable_bonds, formal_charge):
+    """
+    Simple rule-based ADMET guide.
+
+    This is not a trained model. It is an educational triage layer based on common medicinal chemistry heuristics.
+    """
+    soluble = "Good" if logp <= 3 and molecular_weight <= 400 else "Moderate" if logp <= 5 and molecular_weight <= 500 else "Risk"
+    gi_absorption = "High" if tpsa <= 90 and hbd <= 3 and molecular_weight <= 500 else "Moderate" if tpsa <= 140 else "Low"
+    bbb = "Likely" if tpsa <= 70 and logp <= 4 and hbd <= 2 and formal_charge == 0 else "Unlikely"
+    permeability = "Good" if tpsa <= 90 and rotatable_bonds <= 7 else "Moderate" if tpsa <= 140 and rotatable_bonds <= 10 else "Risk"
+    cyp_risk = "Moderate" if logp >= 3 and molecular_weight >= 300 else "Low"
+    toxicity_flag = "Watch" if logp > 5 or molecular_weight > 600 else "Low"
+
+    notes = []
+    if soluble == "Risk":
+        notes.append("High size or lipophilicity may reduce aqueous solubility.")
+    if gi_absorption == "Low":
+        notes.append("High polarity may reduce passive GI absorption.")
+    if bbb == "Likely":
+        notes.append("Low polarity and neutral charge suggest possible CNS penetration.")
+    if cyp_risk == "Moderate":
+        notes.append("Higher lipophilicity and size can increase CYP interaction risk.")
+    if toxicity_flag == "Watch":
+        notes.append("Very high lipophilicity or size can increase developability risk.")
+    if not notes:
+        notes.append("No major rule-based ADMET warning from this first-pass screen.")
+
+    return {
+        "solubility": soluble,
+        "gi_absorption": gi_absorption,
+        "bbb": bbb,
+        "permeability": permeability,
+        "cyp_risk": cyp_risk,
+        "toxicity_flag": toxicity_flag,
+        "notes": notes,
     }
