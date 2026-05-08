@@ -30,6 +30,8 @@ We changed the project so one server can serve:
 - the frontend website
 - the RDKit API
 
+Latest deployment marker: interpretation-panel-v1.
+
 We added:
 
 - `Dockerfile`
@@ -82,4 +84,3 @@ So GitHub Pages or simple static hosting is not enough for the full version.
 5. Choose Docker deployment.
 6. Deploy.
 7. Open the public URL.
-
