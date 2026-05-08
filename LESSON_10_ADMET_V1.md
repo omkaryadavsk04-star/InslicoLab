@@ -24,7 +24,7 @@ It helps users understand early risk signals.
 
 Solubility:
 
-Estimated from size and lipophilicity.
+Estimated with an ESOL-style logS equation based on molecular weight, LogP, rotatable bonds, and aromatic atom proportion.
 
 GI absorption:
 
@@ -51,4 +51,3 @@ Simple warning for extreme size or lipophilicity.
 This makes the product more useful, but we must be honest.
 
 Later, we need proper ADMET models trained or validated with public datasets.
-

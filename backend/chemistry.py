@@ -60,6 +60,8 @@ def analyze_smiles(smiles):
     aromatic_rings = Lipinski.NumAromaticRings(molecule)
     fraction_csp3 = Lipinski.FractionCSP3(molecule)
     formal_charge = Chem.GetFormalCharge(molecule)
+    aromatic_proportion = aromatic_atom_proportion(molecule)
+    esol_logs = estimate_esol_logs(molecular_weight, logp, rotatable_bonds, aromatic_proportion)
 
     return {
         "ok": True,
@@ -76,8 +78,10 @@ def analyze_smiles(smiles):
         "heavy_atoms": heavy_atoms,
         "ring_count": ring_count,
         "aromatic_rings": aromatic_rings,
+        "aromatic_proportion": round(aromatic_proportion, 2),
         "fraction_csp3": round(fraction_csp3, 2),
         "formal_charge": formal_charge,
+        "esol_logs": round(esol_logs, 2),
         "lipinski": lipinski_status(molecular_weight, logp, hbd, hba),
         "interpretation": interpret_drug_likeness(
             molecular_weight,
@@ -97,8 +101,28 @@ def analyze_smiles(smiles):
             tpsa,
             rotatable_bonds,
             formal_charge,
+            esol_logs,
         ),
     }
+
+
+def aromatic_atom_proportion(molecule):
+    """Fraction of heavy atoms that are aromatic."""
+    heavy_atoms = molecule.GetNumHeavyAtoms()
+    if heavy_atoms == 0:
+        return 0
+    aromatic_atoms = sum(1 for atom in molecule.GetAtoms() if atom.GetIsAromatic())
+    return aromatic_atoms / heavy_atoms
+
+
+def estimate_esol_logs(molecular_weight, logp, rotatable_bonds, aromatic_proportion):
+    """
+    ESOL-style aqueous solubility estimate.
+
+    Based on the published Delaney ESOL descriptor form:
+    logS = 0.16 - 0.63 logP - 0.0062 MW + 0.066 RB - 0.74 AP
+    """
+    return 0.16 - 0.63 * logp - 0.0062 * molecular_weight + 0.066 * rotatable_bonds - 0.74 * aromatic_proportion
 
 
 def smiles_to_svg(smiles):
@@ -187,13 +211,13 @@ def interpret_drug_likeness(molecular_weight, logp, hbd, hba, tpsa, rotatable_bo
     }
 
 
-def estimate_admet(molecular_weight, logp, hbd, hba, tpsa, rotatable_bonds, formal_charge):
+def estimate_admet(molecular_weight, logp, hbd, hba, tpsa, rotatable_bonds, formal_charge, esol_logs):
     """
     Simple rule-based ADMET guide.
 
     This is not a trained model. It is an educational triage layer based on common medicinal chemistry heuristics.
     """
-    soluble = "Good" if logp <= 3 and molecular_weight <= 400 else "Moderate" if logp <= 5 and molecular_weight <= 500 else "Risk"
+    soluble = "Good" if esol_logs >= -4 else "Moderate" if esol_logs >= -6 else "Risk"
     gi_absorption = "High" if tpsa <= 90 and hbd <= 3 and molecular_weight <= 500 else "Moderate" if tpsa <= 140 else "Low"
     bbb = "Likely" if tpsa <= 70 and logp <= 4 and hbd <= 2 and formal_charge == 0 else "Unlikely"
     permeability = "Good" if tpsa <= 90 and rotatable_bonds <= 7 else "Moderate" if tpsa <= 140 and rotatable_bonds <= 10 else "Risk"
@@ -216,6 +240,7 @@ def estimate_admet(molecular_weight, logp, hbd, hba, tpsa, rotatable_bonds, form
 
     return {
         "solubility": soluble,
+        "esol_logs": round(esol_logs, 2),
         "gi_absorption": gi_absorption,
         "bbb": bbb,
         "permeability": permeability,

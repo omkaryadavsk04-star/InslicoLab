@@ -290,7 +290,8 @@ function updateInterpretation(interpretation) {
 
 function updateAdmet(admet) {
   if (!admet) {
-    document.querySelector("#solubilityValue").textContent = "--";
+  document.querySelector("#solubilityValue").textContent = "--";
+    document.querySelector("#esolValue").textContent = "--";
     document.querySelector("#giValue").textContent = "--";
     document.querySelector("#bbbValue").textContent = "--";
     document.querySelector("#permeabilityValue").textContent = "--";
@@ -301,6 +302,8 @@ function updateAdmet(admet) {
   }
 
   document.querySelector("#solubilityValue").textContent = admet.solubility;
+  document.querySelector("#esolValue").textContent =
+    typeof admet.esol_logs === "number" ? admet.esol_logs.toFixed(2) : "--";
   document.querySelector("#giValue").textContent = admet.gi_absorption;
   document.querySelector("#bbbValue").textContent = admet.bbb;
   document.querySelector("#permeabilityValue").textContent = admet.permeability;
