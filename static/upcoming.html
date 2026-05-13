@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upcoming Platform | Aurenx Biosystems</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Aurenx Biosystems home">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="aurenx-logo.jpg" alt="" />
+        </span>
+        <span>
+          <strong>Aurenx Biosystems</strong>
+          <small>Platform roadmap</small>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html#platforms">Platforms</a>
+        <a href="insilicolab.html">InsilicoLab</a>
+        <a href="manuscripta.html">ManuScripta</a>
+      </nav>
+    </header>
+
+    <main class="product-main">
+      <section class="hero product-hero">
+        <canvas id="bioCanvas" aria-hidden="true"></canvas>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="product-panel">
+          <p class="eyebrow">Upcoming</p>
+          <h2 id="platformTitle">Platform in development</h2>
+          <p id="platformCopy">
+            This Aurenx platform is on the roadmap. Current active development is focused on InsilicoLab and
+            ManuScripta Scientific.
+          </p>
+          <ul class="feature-list">
+            <li>Concept design and scientific scope definition</li>
+            <li>Workflow planning and validation strategy</li>
+            <li>Launch after the active platforms are stable</li>
+          </ul>
+          <div class="hero-actions">
+            <a class="button primary" href="index.html#platforms">View active platforms</a>
+            <a class="button secondary" href="mailto:omkaryadavsk04@gmail.com">Contact Aurenx</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="app.js"></script>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const platform = params.get("platform");
+      const data = {
+        bioforge: {
+          title: "BioForge Labs",
+          copy:
+            "BioForge Labs will focus on wet lab validation, assay development, and intelligent laboratory workflows.",
+        },
+        pharmanexus: {
+          title: "PharmaNexus",
+          copy:
+            "PharmaNexus will focus on pharmacology analytics, PK/PD modeling, and translational research systems.",
+        },
+      };
+      if (data[platform]) {
+        document.querySelector("#platformTitle").textContent = data[platform].title;
+        document.querySelector("#platformCopy").textContent = data[platform].copy;
+      }
+    </script>
+  </body>
+</html>
