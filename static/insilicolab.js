@@ -18,8 +18,14 @@ const examples = [
 ];
 
 let library = [];
-const API_URL =
-  window.location.protocol === "file:" ? "http://127.0.0.1:8000/api/analyze" : `${window.location.origin}/api/analyze`;
+const LIVE_CHEMISTRY_API = "https://inslicolab.onrender.com";
+const API_BASE =
+  window.location.protocol === "file:"
+    ? "http://127.0.0.1:8000"
+    : window.location.hostname.endsWith("github.io")
+      ? LIVE_CHEMISTRY_API
+      : window.location.origin;
+const API_URL = `${API_BASE}/api/analyze`;
 
 const form = document.querySelector("#compoundForm");
 const nameInput = document.querySelector("#compoundName");
@@ -29,7 +35,6 @@ const libraryCount = document.querySelector("#libraryCount");
 const canvas = document.querySelector("#moleculeCanvas");
 const ctx = canvas.getContext("2d");
 const moleculeImage = document.querySelector("#moleculeImage");
-const API_BASE = window.location.protocol === "file:" ? "http://127.0.0.1:8000" : window.location.origin;
 
 function tokenizeSmiles(smiles) {
   return smiles.match(/Cl|Br|[A-Z][a-z]?|[cnosp]|\[[^\]]+\]/g) || [];
