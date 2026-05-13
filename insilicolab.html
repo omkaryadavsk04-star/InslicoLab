@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InsilicoLab | Aurenx Biosystems</title>
+    <link rel="stylesheet" href="insilicolab.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div>
+          <p class="eyebrow">AI Drug Discovery</p>
+          <h1>InSilicoLab</h1>
+        </div>
+
+        <nav class="nav-list" aria-label="Workflow">
+          <button class="nav-item active" type="button" data-module="Compounds">Compounds</button>
+          <button class="nav-item" type="button" data-module="Docking">Docking</button>
+          <button class="nav-item" type="button" data-module="ADMET">ADMET</button>
+          <button class="nav-item" type="button" data-module="Reports">Reports</button>
+        </nav>
+
+        <section class="status-panel">
+          <span class="status-dot"></span>
+          <div>
+            <strong>Prototype v1</strong>
+            <p>SMILES screening and Lipinski triage</p>
+          </div>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Compound triage</p>
+            <h2>Drug-likeness workbench</h2>
+          </div>
+          <button id="exportCsv" class="icon-button" type="button" title="Export CSV" aria-label="Export CSV">
+            <span>CSV</span>
+          </button>
+        </header>
+
+        <section class="input-band">
+          <form id="compoundForm" class="compound-form">
+            <label for="compoundName">Compound name</label>
+            <input id="compoundName" name="compoundName" type="text" placeholder="Enter compound name" autocomplete="off" />
+
+            <label for="smilesInput">SMILES</label>
+            <textarea id="smilesInput" name="smilesInput" placeholder="Paste SMILES here" required></textarea>
+
+            <div class="form-actions">
+              <button class="primary-button" type="submit">Analyze</button>
+              <button id="loadExamples" class="secondary-button" type="button">Examples</button>
+            </div>
+          </form>
+
+          <div class="molecule-panel" aria-label="Molecule preview">
+            <img id="moleculeImage" alt="RDKit molecule structure" hidden />
+            <canvas id="moleculeCanvas" width="420" height="260"></canvas>
+          </div>
+        </section>
+
+        <section class="metrics-grid" aria-label="Calculated properties">
+          <article class="metric">
+            <span>Engine</span>
+            <strong id="engineValue">Local</strong>
+          </article>
+          <article class="metric">
+            <span>Mol. weight</span>
+            <strong id="mwValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Formula</span>
+            <strong id="formulaValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Exact mass</span>
+            <strong id="exactMassValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>cLogP estimate</span>
+            <strong id="logpValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>H donors</span>
+            <strong id="hbdValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>H acceptors</span>
+            <strong id="hbaValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>TPSA estimate</span>
+            <strong id="tpsaValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Rot. bonds</span>
+            <strong id="rotatableValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Heavy atoms</span>
+            <strong id="heavyAtomsValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Rings</span>
+            <strong id="ringsValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Aromatic rings</span>
+            <strong id="aromaticRingsValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Fraction Csp3</span>
+            <strong id="fractionCsp3Value">--</strong>
+          </article>
+          <article class="metric">
+            <span>Formal charge</span>
+            <strong id="chargeValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Mol. refractivity</span>
+            <strong id="mrValue">--</strong>
+          </article>
+          <article class="metric">
+            <span>Lipinski</span>
+            <strong id="lipinskiValue">--</strong>
+          </article>
+        </section>
+
+        <section class="interpretation-section" aria-label="Drug-likeness interpretation">
+          <div class="section-heading">
+            <h3>Drug-likeness interpretation</h3>
+            <p id="overallValue">Waiting for molecule</p>
+          </div>
+          <div class="interpretation-body">
+            <p id="summaryValue">Analyze a SMILES to generate a medicinal chemistry interpretation.</p>
+            <div class="risk-grid">
+              <span id="sizeRisk" class="risk-chip">Size --</span>
+              <span id="lipophilicityRisk" class="risk-chip">Lipophilicity --</span>
+              <span id="polarityRisk" class="risk-chip">Polarity --</span>
+              <span id="flexibilityRisk" class="risk-chip">Flexibility --</span>
+              <span id="hbondRisk" class="risk-chip">H-bonding --</span>
+              <span id="shapeRisk" class="risk-chip">Shape --</span>
+            </div>
+            <ul id="suggestionList" class="suggestion-list">
+              <li>RDKit results will appear here after analysis.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="admet-section" aria-label="ADMET preview">
+          <div class="section-heading">
+            <h3>ADMET preview</h3>
+            <p>Rule-based screen</p>
+          </div>
+          <div class="admet-grid">
+            <article class="admet-item">
+              <span>Solubility</span>
+              <strong id="solubilityValue">--</strong>
+            </article>
+            <article class="admet-item">
+              <span>GI absorption</span>
+              <strong id="giValue">--</strong>
+            </article>
+            <article class="admet-item">
+              <span>BBB likelihood</span>
+              <strong id="bbbValue">--</strong>
+            </article>
+            <article class="admet-item">
+              <span>Permeability</span>
+              <strong id="permeabilityValue">--</strong>
+            </article>
+            <article class="admet-item">
+              <span>CYP risk</span>
+              <strong id="cypValue">--</strong>
+            </article>
+            <article class="admet-item">
+              <span>Toxicity flag</span>
+              <strong id="toxValue">--</strong>
+            </article>
+          </div>
+          <ul id="admetNotes" class="suggestion-list admet-notes">
+            <li>Analyze a SMILES to generate first-pass ADMET notes.</li>
+          </ul>
+        </section>
+
+        <section class="methods-section" aria-label="Methods and research basis">
+          <div class="section-heading">
+            <h3>Methods basis</h3>
+            <p>Transparent science layer</p>
+          </div>
+          <div class="methods-grid">
+            <article class="method-item">
+              <strong>RDKit descriptors</strong>
+              <p>Molecular properties, formula, exact mass, TPSA, rings, and structure images are calculated with RDKit.</p>
+            </article>
+            <article class="method-item">
+              <strong>Rule-based triage</strong>
+              <p>Drug-likeness and ADMET preview use medicinal chemistry heuristics. These are educational screens, not clinical predictions.</p>
+            </article>
+            <article class="method-item">
+              <strong>Future models</strong>
+              <p>Next versions will add paper-based methods, benchmark datasets, model validation, and our own trained predictors.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="results-section">
+          <div class="section-heading">
+            <h3>Compound library</h3>
+            <p id="libraryCount">0 compounds</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>SMILES</th>
+                  <th>Formula</th>
+                  <th>MW</th>
+                  <th>LogP</th>
+                  <th>HBD</th>
+                  <th>HBA</th>
+                  <th>TPSA</th>
+                  <th>RotB</th>
+                  <th>Lipinski</th>
+                </tr>
+              </thead>
+              <tbody id="compoundTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div id="moduleModal" class="modal-overlay" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="moduleTitle">
+        <div class="section-heading">
+          <h3 id="moduleTitle">Coming soon</h3>
+          <button id="closeModal" class="icon-button" type="button" aria-label="Close">X</button>
+        </div>
+        <p id="moduleMessage"></p>
+      </section>
+    </div>
+
+    <script src="insilicolab.js"></script>
+  </body>
+</html>
